@@ -10,6 +10,12 @@ This is a fork of [Deskflow](https://github.com/deskflow/deskflow) focused on op
 > - PRs that are approved by the upstream Deskflow maintainers will be merged here
 > - Features or changes not accepted upstream will remain available in this fork
 
+## Fork-specific Changes
+
+Changes available in this fork that have not been merged upstream:
+
+- Network change notification support
+
 For full documentation, downloads, and information about Deskflow, please visit the original project:
 
 **[https://github.com/deskflow/deskflow](https://github.com/deskflow/deskflow)**
