@@ -10,6 +10,10 @@ This is a fork of [Deskflow](https://github.com/deskflow/deskflow) focused on op
 > - PRs that are approved by the upstream Deskflow maintainers will be merged here
 > - Features or changes not accepted upstream will remain available in this fork
 
+> [!WARNING]
+> This fork is maintained on a best-effort basis. I may not have the time or capacity to address all issues.
+> Please submit major bugs and feature requests to the [original Deskflow repository](https://github.com/deskflow/deskflow/issues).
+
 ## Fork-specific Changes
 
 Changes available in this fork that have not been merged upstream:
