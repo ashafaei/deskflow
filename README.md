@@ -10,6 +10,13 @@ and work seamlessly between them.
 It's like a software KVM (but without the video).
 TLS encryption is enabled by default. Wayland is supported. Clipboard sharing is supported.
 
+> [!NOTE]
+> **About this fork**
+>
+> This fork focuses on optimizing the macOS UI/UX experience. Other platforms are not actively tested.
+> PRs that are approved by the upstream Deskflow maintainers will be merged here. Features or changes
+> not accepted upstream will remain available in this fork.
+
 > [!TIP]
 >
 > **Chat with us**
