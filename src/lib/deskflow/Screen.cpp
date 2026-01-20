@@ -177,6 +177,11 @@ void Screen::screensaver(bool) const
   // do nothing
 }
 
+void Screen::lockScreen() const
+{
+  m_screen->lockScreen();
+}
+
 void Screen::keyDown(KeyID id, KeyModifierMask mask, KeyButton button, const std::string &lang)
 {
   // check for ctrl+alt+del emulation

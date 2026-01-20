@@ -74,6 +74,7 @@ public:
   void mouseRelativeMove(int32_t xRel, int32_t yRel) override = 0;
   void mouseWheel(int32_t xDelta, int32_t yDelta) override = 0;
   void screensaver(bool activate) override = 0;
+  void lockScreen() override = 0;
   void resetOptions() override = 0;
   void setOptions(const OptionsList &options) override = 0;
   virtual void sendDragInfo(uint32_t fileCount, const char *info, size_t size) = 0;

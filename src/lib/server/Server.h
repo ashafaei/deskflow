@@ -170,6 +170,12 @@ public:
   */
   void disconnect();
 
+  //! Lock all screens
+  /*!
+  Lock the screens of all connected clients and the primary screen.
+  */
+  void lockAllScreens();
+
   //! Store ClientListener pointer
   void setListener(ClientListener *p)
   {

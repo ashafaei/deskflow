@@ -14,6 +14,10 @@
 #include "OSXHelpers.h"
 #endif
 
+#if defined(Q_OS_UNIX)
+#include <csignal>
+#endif
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
@@ -564,6 +568,38 @@ void CoreProcess::retryDaemon()
 {
   if (m_daemonIpcClient->connectToServer()) {
     qInfo("successfully reconnected to daemon");
+  }
+}
+
+void CoreProcess::lockAllScreens()
+{
+  if (m_processState != ProcessState::Started) {
+    qWarning("cannot lock screens: core process not running");
+    return;
+  }
+
+  if (m_mode != Settings::CoreMode::Server) {
+    qWarning("cannot lock screens: not running in server mode");
+    return;
+  }
+
+  const auto processMode = Settings::value(Settings::Core::ProcessMode).value<ProcessMode>();
+  if (processMode == ProcessMode::Desktop && m_process != nullptr) {
+#if defined(Q_OS_UNIX)
+    // Send SIGUSR2 to the core process to trigger lock all screens
+    qint64 pid = m_process->processId();
+    if (pid > 0) {
+      qInfo("sending lock signal to core process (pid: %lld)", pid);
+      kill(static_cast<pid_t>(pid), SIGUSR2);
+    }
+#elif defined(Q_OS_WIN)
+    // TODO: Windows doesn't support Unix signals. Need to implement cross-process
+    // communication via named events or extend the daemon IPC protocol.
+    qWarning("lock all screens not yet supported on Windows in desktop mode");
+#endif
+  } else if (processMode == ProcessMode::Service) {
+    // For service mode, we'd need to extend the daemon IPC protocol
+    qWarning("lock all screens not yet supported in service mode");
   }
 }
 

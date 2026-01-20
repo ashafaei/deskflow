@@ -91,6 +91,7 @@ private:
   void mouseRelativeMove();
   void mouseWheel();
   void screensaver();
+  void lockScreen();
   void resetOptions();
   void setOptions();
   void queryInfo();

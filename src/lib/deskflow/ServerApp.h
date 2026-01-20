@@ -69,6 +69,7 @@ public:
   void reloadConfig();
   void forceReconnect();
   void resetServer();
+  void lockAllScreens();
   void handleClientConnected(const Event &e, ClientListener *listener);
   void closeServer(Server *server);
   void stopRetryTimer();
@@ -96,6 +97,7 @@ public:
   //
 
   static void reloadSignalHandler(Arch::ThreadSignal, void *);
+  static void lockAllScreensSignalHandler(Arch::ThreadSignal, void *);
   static ServerApp &instance()
   {
     return (ServerApp &)App::instance();

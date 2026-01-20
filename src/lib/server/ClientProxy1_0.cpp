@@ -336,6 +336,12 @@ void ClientProxy1_0::screensaver(bool on)
   ProtocolUtil::writef(getStream(), kMsgCScreenSaver, on ? 1 : 0);
 }
 
+void ClientProxy1_0::lockScreen()
+{
+  LOG_DEBUG1("send lock screen to \"%s\"", getName().c_str());
+  ProtocolUtil::writef(getStream(), kMsgCLockScreen);
+}
+
 void ClientProxy1_0::resetOptions()
 {
   LOG_DEBUG1("send reset options to \"%s\"", getName().c_str());

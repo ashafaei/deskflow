@@ -62,6 +62,7 @@ public:
   void applyLogLevel();
   void clearSettings();
   void retryDaemon();
+  void lockAllScreens();
 
   // getters
   Settings::CoreMode mode() const

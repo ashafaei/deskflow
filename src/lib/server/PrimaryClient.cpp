@@ -196,6 +196,11 @@ void PrimaryClient::screensaver(bool)
   // ignore
 }
 
+void PrimaryClient::lockScreen()
+{
+  m_screen->lockScreen();
+}
+
 void PrimaryClient::sendDragInfo(uint32_t fileCount, const char *info, size_t size)
 {
   // ignore

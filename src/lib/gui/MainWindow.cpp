@@ -48,7 +48,7 @@
 #include <memory>
 
 #if defined(Q_OS_MACOS)
-#include <ApplicationServices/ApplicationServices.h>
+#include "OSXHelpers.h"
 #endif
 
 using namespace deskflow::gui;
@@ -84,6 +84,7 @@ MainWindow::MainWindow()
       m_actionStartCore{new QAction(this)},
       m_actionRestartCore{new QAction(this)},
       m_actionStopCore{new QAction(this)},
+      m_actionLockAllScreens{new QAction(this)},
       m_networkMonitor{new NetworkMonitor(this)}
 {
   ui->setupUi(this);
@@ -125,6 +126,10 @@ MainWindow::MainWindow()
 
   m_actionStopCore->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ProcessStop));
   m_actionStopCore->setMenuRole(QAction::NoRole);
+
+  m_actionLockAllScreens->setIcon(QIcon::fromTheme(QStringLiteral("system-lock-screen")));
+  m_actionLockAllScreens->setMenuRole(QAction::NoRole);
+  m_actionLockAllScreens->setVisible(false); // Only show when clients are connected
 
   m_actionReportBug->setIcon(QIcon(QIcon::fromTheme(QStringLiteral("tools-report-bug"))));
   m_actionReportBug->setMenuRole(QAction::NoRole);
@@ -292,6 +297,7 @@ void MainWindow::connectSlots()
   connect(m_actionStartCore, &QAction::triggered, this, &MainWindow::startCore);
   connect(m_actionRestartCore, &QAction::triggered, this, &MainWindow::resetCore);
   connect(m_actionStopCore, &QAction::triggered, this, &MainWindow::stopCore);
+  connect(m_actionLockAllScreens, &QAction::triggered, this, &MainWindow::lockAllScreens);
 
   connect(&m_versionChecker, &VersionChecker::updateFound, this, &MainWindow::versionCheckerUpdateFound);
 
@@ -445,6 +451,15 @@ void MainWindow::stopCore()
   m_coreProcess.stop();
   m_actionStartCore->setVisible(true);
   m_actionRestartCore->setVisible(false);
+}
+
+void MainWindow::lockAllScreens()
+{
+  qDebug() << "locking all screens";
+
+  // Signal the core process to lock all screens (server + all clients)
+  // This sends SIGUSR2 to the core process which triggers Server::lockAllScreens()
+  m_coreProcess.lockAllScreens();
 }
 
 void MainWindow::clearSettings()
@@ -690,8 +705,10 @@ void MainWindow::setupTrayIcon()
 {
   auto trayMenu = new QMenu(this);
   trayMenu->addActions(
-      {m_actionStartCore, m_actionRestartCore, m_actionStopCore, m_actionMinimize, m_actionRestore, m_actionTrayQuit}
+      {m_actionStartCore, m_actionRestartCore, m_actionStopCore, m_actionLockAllScreens, m_actionMinimize,
+       m_actionRestore, m_actionTrayQuit}
   );
+  trayMenu->insertSeparator(m_actionLockAllScreens);
   trayMenu->insertSeparator(m_actionMinimize);
   trayMenu->insertSeparator(m_actionTrayQuit);
   m_trayIcon->setContextMenu(trayMenu);
@@ -990,6 +1007,11 @@ void MainWindow::coreConnectionStateChanged(CoreConnectionState state)
 
   updateStatus();
 
+  // Show "Lock All Screens" only when server has connected clients
+  const bool isServer = m_coreProcess.mode() == Settings::CoreMode::Server;
+  const bool hasClients = state == CoreConnectionState::Connected;
+  m_actionLockAllScreens->setVisible(isServer && hasClients);
+
   // always assume connection is not secure when connection changes
   // to anything except connected. the only way the padlock shows is
   // when the correct TLS version string is detected.
@@ -1051,6 +1073,7 @@ void MainWindow::updateText()
   m_actionStartCore->setText(tr("&Start"));
   m_actionRestartCore->setText(tr("Rest&art"));
   m_actionStopCore->setText(tr("S&top"));
+  m_actionLockAllScreens->setText(tr("&Lock All Screens"));
   //: %1 will be the replaced with the appname
   m_actionAbout->setText(tr("About %1...").arg(kAppName));
 
