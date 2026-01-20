@@ -393,6 +393,12 @@ void MSWindowsScreen::screensaver(bool activate)
   }
 }
 
+void MSWindowsScreen::lockScreen()
+{
+  LOG_DEBUG("locking screen");
+  LockWorkStation();
+}
+
 void MSWindowsScreen::resetOptions()
 {
   m_desks->resetOptions();

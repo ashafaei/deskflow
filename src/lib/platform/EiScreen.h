@@ -73,6 +73,7 @@ public:
   void openScreensaver(bool notify) override;
   void closeScreensaver() override;
   void screensaver(bool activate) override;
+  void lockScreen() override;
   void resetOptions() override;
   void setOptions(const OptionsList &options) override;
   void setSequenceNumber(std::uint32_t) override;

@@ -1531,6 +1531,23 @@ void Server::onScreensaver(bool activated)
   }
 }
 
+void Server::lockAllScreens()
+{
+  LOG_DEBUG("locking all screens");
+
+  // lock the primary screen
+  m_primaryClient->lockScreen();
+
+  // send lock message to all connected clients
+  for (ClientList::const_iterator index = m_clients.begin(); index != m_clients.end(); ++index) {
+    BaseClientProxy *client = index->second;
+    // skip primary client (already locked above)
+    if (!client->isPrimary()) {
+      client->lockScreen();
+    }
+  }
+}
+
 void Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button, const std::string &lang, const char *screens)
 {
   LOG_DEBUG1("onKeyDown id=%d mask=0x%04x button=0x%04x lang=%s", id, mask, button, lang.c_str());

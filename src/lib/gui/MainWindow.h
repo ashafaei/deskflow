@@ -123,6 +123,7 @@ private:
   void showMyFingerprint();
   void updateSecurityIcon(bool visible);
   void updateNetworkInfo();
+  void lockAllScreens();
 
   void coreModeToggled();
   void updateModeControls(bool serverMode);
@@ -224,6 +225,7 @@ private:
   QAction *m_actionStartCore = nullptr;
   QAction *m_actionRestartCore = nullptr;
   QAction *m_actionStopCore = nullptr;
+  QAction *m_actionLockAllScreens = nullptr;
 
   // Network monitoring
   NetworkMonitor *m_networkMonitor = nullptr;

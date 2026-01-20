@@ -104,6 +104,12 @@ public:
   */
   void screensaver(bool activate) const;
 
+  //! Lock the screen
+  /*!
+  Lock this screen, requiring authentication to unlock.
+  */
+  void lockScreen() const;
+
   //! Notify of key press
   /*!
   Synthesize key events to generate a press of key \c id.  If possible

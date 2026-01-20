@@ -24,6 +24,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <vector>
 
@@ -439,6 +440,35 @@ void EiScreen::closeScreensaver()
 void EiScreen::screensaver(bool activate)
 {
   // FIXME
+}
+
+void EiScreen::lockScreen()
+{
+  LOG_DEBUG("locking screen");
+
+  // Use double-fork to avoid zombie processes.
+  // The first fork creates a child, the child forks again and exits immediately.
+  // The grandchild does the actual work and is reaped by init/systemd.
+  pid_t pid = fork();
+  if (pid == 0) {
+    // First child - fork again and exit immediately
+    pid_t grandchild = fork();
+    if (grandchild == 0) {
+      // Grandchild process - do the actual work
+      execlp("xdg-screensaver", "xdg-screensaver", "lock", nullptr);
+      // If xdg-screensaver fails, try loginctl as fallback
+      execlp("loginctl", "loginctl", "lock-session", nullptr);
+      // If both fail, exit
+      _exit(1);
+    }
+    // First child exits immediately (grandchild inherited by init)
+    _exit(0);
+  } else if (pid > 0) {
+    // Parent waits for first child to prevent zombie
+    waitpid(pid, nullptr, 0);
+  } else {
+    LOG_WARN("failed to lock screen: fork failed");
+  }
 }
 
 void EiScreen::resetOptions()

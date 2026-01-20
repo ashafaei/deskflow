@@ -85,6 +85,12 @@ void ServerApp::reloadSignalHandler(Arch::ThreadSignal, void *)
   events->addEvent(Event(EventTypes::ServerAppReloadConfig, events->getSystemTarget()));
 }
 
+void ServerApp::lockAllScreensSignalHandler(Arch::ThreadSignal, void *)
+{
+  IEventQueue *events = App::instance().getEvents();
+  events->addEvent(Event(EventTypes::ServerAppLockAllScreens, events->getSystemTarget()));
+}
+
 QString ServerApp::currentConfig() const
 {
   bool useExt = Settings::value(Settings::Server::ExternalConfig).toBool();
@@ -100,6 +106,17 @@ void ServerApp::reloadConfig()
       m_server->setConfig(*m_config);
     }
     LOG_NOTE("reloaded configuration");
+  }
+}
+
+void ServerApp::lockAllScreens()
+{
+  LOG_DEBUG("lock all screens");
+  if (m_server != nullptr) {
+    m_server->lockAllScreens();
+    LOG_NOTE("locked all screens");
+  } else {
+    LOG_WARN("cannot lock screens: server not running");
   }
 }
 
@@ -547,6 +564,12 @@ int ServerApp::mainLoop()
   // the option to reset the state of the server.
   getEvents()->addHandler(EventTypes::ServerAppResetServer, getEvents()->getSystemTarget(), [this](const auto &) {
     resetServer();
+  });
+
+  // handle SIGUSR2 signal to lock all screens (server + clients)
+  ARCH->setSignalHandler(Arch::ThreadSignal::User, &lockAllScreensSignalHandler, nullptr);
+  getEvents()->addHandler(EventTypes::ServerAppLockAllScreens, getEvents()->getSystemTarget(), [this](const auto &) {
+    lockAllScreens();
   });
 
   // run event loop.  if startServer() failed we're supposed to retry

@@ -45,7 +45,7 @@ static const int16_t kProtocolMajorVersion = 1;
  * @note When incrementing the minor version, the Deskflow application version should also increment
  * @since Protocol version 1.0
  */
-static const int16_t kProtocolMinorVersion = 8;
+static const int16_t kProtocolMinorVersion = 9;
 
 /**
  * @brief Default TCP port for Deskflow connections
@@ -452,6 +452,20 @@ extern const char *const kMsgCClipboard;
  * @since Protocol version 1.0
  */
 extern const char *const kMsgCScreenSaver;
+
+/**
+ * @brief Lock screen command
+ *
+ * **Message Code**: `"CLCK"`
+ * **Direction**: Primary → Secondary
+ * **Format**: No parameters
+ *
+ * Instructs the client to lock its screen. This is used when the user
+ * requests to lock all screens from the server's UI.
+ *
+ * @since Protocol version 1.9
+ */
+extern const char *const kMsgCLockScreen;
 
 /**
  * @brief Reset options command

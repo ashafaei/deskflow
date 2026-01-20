@@ -804,6 +804,32 @@ void OSXScreen::screensaver(bool activate)
   }
 }
 
+void OSXScreen::lockScreen()
+{
+  LOG_DEBUG("locking screen");
+
+  // Use the macOS menu bar shortcut to lock: Control+Command+Q
+  // This is more reliable than using private APIs
+  CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+  if (source) {
+    // Create key down event for 'q' with Control+Command modifiers
+    CGEventRef keyDown = CGEventCreateKeyboardEvent(source, kVK_ANSI_Q, true);
+    CGEventRef keyUp = CGEventCreateKeyboardEvent(source, kVK_ANSI_Q, false);
+
+    if (keyDown && keyUp) {
+      CGEventSetFlags(keyDown, kCGEventFlagMaskControl | kCGEventFlagMaskCommand);
+      CGEventSetFlags(keyUp, kCGEventFlagMaskControl | kCGEventFlagMaskCommand);
+
+      CGEventPost(kCGHIDEventTap, keyDown);
+      CGEventPost(kCGHIDEventTap, keyUp);
+
+      CFRelease(keyDown);
+      CFRelease(keyUp);
+    }
+    CFRelease(source);
+  }
+}
+
 void OSXScreen::resetOptions()
 {
   // no options

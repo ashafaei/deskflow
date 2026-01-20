@@ -130,6 +130,13 @@ public:
   //! Notify of screen saver change
   virtual void screensaver(bool activate) = 0;
 
+  //! Lock the screen
+  /*!
+  Lock this client's screen. This is called when the server requests
+  all screens to be locked.
+  */
+  virtual void lockScreen() = 0;
+
   //! Notify of options changes
   /*!
   Reset all options to their default values.

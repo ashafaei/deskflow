@@ -277,6 +277,10 @@ ServerProxy::ConnectionResult ServerProxy::parseMessage(const uint8_t *code)
     screensaver();
   }
 
+  else if (memcmp(code, kMsgCLockScreen, 4) == 0) {
+    lockScreen();
+  }
+
   else if (memcmp(code, kMsgQInfo, 4) == 0) {
     queryInfo();
   }
@@ -739,6 +743,14 @@ void ServerProxy::screensaver()
 
   // forward
   m_client->screensaver(on != 0);
+}
+
+void ServerProxy::lockScreen()
+{
+  LOG_DEBUG1("recv lock screen");
+
+  // forward
+  m_client->lockScreen();
 }
 
 void ServerProxy::resetOptions()

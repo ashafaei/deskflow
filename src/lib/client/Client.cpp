@@ -289,6 +289,11 @@ void Client::screensaver(bool activate)
   m_screen->screensaver(activate);
 }
 
+void Client::lockScreen()
+{
+  m_screen->lockScreen();
+}
+
 void Client::resetOptions()
 {
   m_screen->resetOptions();
